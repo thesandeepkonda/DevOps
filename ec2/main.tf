@@ -22,7 +22,7 @@ resource "local_file" "private_key" {
 }
 
 module "ec2_instance" {
-  source = "github.com/KoteshwarChinnolla/terraform-modules/modules/ec2_instance"
+  source = "github.com/thesandeepkonda/DevOps//modules/ec2_instance"
 
   ami_id              = var.ami_id
   instance_type       = var.instance_type

@@ -12,7 +12,7 @@ terraform {
 
 
 module "vpc" {
-    source = "github.com/KoteshwarChinnolla/terraform-modules//modules/vpc"
+    source = "source = "github.com/thesandeepkonda/DevOps//modules/vpc""
     resource_name = var.resource_name
     vpc_cidr_block = var.vpc_cidr_block
     private_subnet_cidr_blocks = var.private_subnet_cidr_blocks
@@ -23,7 +23,7 @@ module "vpc" {
 }
 
 module "rds" {
-  source = "github.com/KoteshwarChinnolla/terraform-modules//modules/rds"
+  source = "github.com/thesandeepkonda/DevOps//modules/rds"
 
   resource_name = "${var.resource_name}-rds"
 
@@ -79,7 +79,7 @@ resource "aws_instance" "temp_ec2_instance" {
 
 
 module "asg" {
-  source = "github.com/KoteshwarChinnolla/terraform-modules//modules/asg"
+  source = "github.com/thesandeepkonda/DevOps//modules/asg"
 
   resource_name    = "${var.resource_name}-asg"
   vpc_id           = module.vpc.vpc_id
@@ -96,7 +96,7 @@ module "asg" {
 
 
 module "alb" {
-  source = "github.com/KoteshwarChinnolla/terraform-modules//modules/alb"
+  source = "github.com/thesandeepkonda/DevOps//modules/alb"
 
   name       = "${var.resource_name}-alb"
   vpc_id     = module.vpc.vpc_id
@@ -121,7 +121,7 @@ module "alb" {
 
 
 module "ecs" {
-  source = "github.com/KoteshwarChinnolla/terraform-modules//modules/ecs"
+  source = "github.com/thesandeepkonda/DevOps//modules/ecs"
 
   resource_name = var.resource_name
   aws_region    = var.aws_region

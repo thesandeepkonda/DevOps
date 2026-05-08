@@ -23,7 +23,7 @@ terraform {
 }
 
 module "s3_bucket" {
-  source              = "github.com/KoteshwarChinnolla/terraform-modules//modules/s3_bucket"
+  source              = "github.com/thesandeepkonda/DevOps//modules/s3_bucket"
   bucket_name         = var.bucket_name
   privacy             = var.privacy
   folder_path         = var.folder_path
@@ -37,7 +37,7 @@ module "cirtificate" {
   providers = {
     aws = aws.us_east_1
   }
-  source = "github.com/KoteshwarChinnolla/terraform-modules//modules/acm_SUB_ROOT_CERT"
+  source = "github.com/thesandeepkonda/DevOps//modules/acm_SUB_ROOT_CERT"
   certificate_type = var.certificate_type
   root_domain = var.domine_name
   domain_name = var.acm_domine_name
@@ -49,7 +49,7 @@ module "cirtificate" {
 module "cloud_front" {
   depends_on = [ module.s3_bucket, module.cirtificate ]
   count              = var.cloudfront_enabled ? 1 : 0
-  source             = "github.com/KoteshwarChinnolla/terraform-modules//modules/cloud_front"
+  source             = "github.com/thesandeepkonda/DevOps//modules/cloud_front"
   bucket_name        = var.bucket_name
   domine_names       = var.domine_names
   bucket_domain_name = module.s3_bucket.bucket_domain
@@ -63,7 +63,7 @@ output "cloud_front_distribution_id" {
 
 module "route_53" {
   count         = var.route_53_enable ? 1 : 0
-  source        = "github.com/KoteshwarChinnolla/terraform-modules//modules/route_53"
+  source        = "github.com/thesandeepkonda/DevOps//modules/route_53"
   domine_exists = var.domine_exists
   domine_name   = var.domine_name
 

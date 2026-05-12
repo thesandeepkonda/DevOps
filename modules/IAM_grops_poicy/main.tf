@@ -7,7 +7,7 @@ data "aws_iam_policy_document" "example" {
       effect    = statement.value.effect
     }
   }
-}
+} 
 
 resource "aws_iam_group" "group1" {
   name = var.group_name

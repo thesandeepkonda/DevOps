@@ -12,7 +12,7 @@ terraform {
 
 
 module "vpc" {
-    source = "source = "github.com/thesandeepkonda/DevOps//modules/vpc""
+    source = "github.com/thesandeepkonda/DevOps//modules/vpc""
     resource_name = var.resource_name
     vpc_cidr_block = var.vpc_cidr_block
     private_subnet_cidr_blocks = var.private_subnet_cidr_blocks

@@ -36,8 +36,8 @@ jobs:
         mv dist terraform/webhosting/
         rm -rf node_modules package-lock.json
 
-    # - name: Delete everything from S3
-    #   run: aws s3 rm s3://cafe-frontend-web-files/ --recursive
+    - name: Delete everything from S3
+      run: aws s3 rm s3://jjr-frontend-web-files/ --recursive
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
@@ -66,7 +66,7 @@ jobs:
     - name: Final Cleanup
       if: always()
       run: |
-        rm -rf terraform/webhosting/build
+        rm -rf terraform/webhosting/buildx
         rm -rf terraform/webhosting/.terraform
         rm -f terraform/webhosting/.terraform.lock.hcl
         rm -rf ./* ./.??* || true

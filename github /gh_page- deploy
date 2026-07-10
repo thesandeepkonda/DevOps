@@ -1,4 +1,4 @@
-#this is for Vite React
+#this is for Vite React  EXPO
 
 name: Deploy GitHub Pages
 
@@ -77,7 +77,7 @@ jobs:
           force_orphan: true
 
 
-# this is for APP/WEB/IOS
+# this is for APP/WEB/IOS APPS
 name: Deploy Expo Web App
 
 on:

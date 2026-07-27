@@ -23,7 +23,7 @@ variable "max_size" { type = number }
 
 variable "ecs_ami_ssm_path" {
   type    = string
-  default = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
+  default = "/aws/service/ecs/optimized-ami/amazon-linux-2023/recommended/image_id"
 }
 
 variable "allowed_ingress" {

@@ -59,9 +59,13 @@ resource "aws_launch_template" "ecs_ec2" {
   instance_type = var.instance_type
   key_name      = var.instance_key
 
-  instance_market_options {
+dynamic "instance_market_options" {
+  for_each = var.market_type == null ? [] : [1]
+
+  content {
     market_type = var.market_type
   }
+}
 
   network_interfaces {
     associate_public_ip_address = true

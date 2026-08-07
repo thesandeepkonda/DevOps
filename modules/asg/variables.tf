@@ -15,7 +15,7 @@ variable "instance_key" {
 
 variable "market_type" {
   type    = string
-  default = "null"
+  market_type = var.market_type
 }
 
 variable "min_size" { type = number }

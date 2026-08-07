@@ -15,7 +15,7 @@ variable "instance_key" {
 
 variable "market_type" {
   type    = string
-  default = "On-Demand"
+  default = "null"
 }
 
 variable "min_size" { type = number }

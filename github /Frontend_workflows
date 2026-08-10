@@ -5,7 +5,6 @@ on:
       - xyz
   workflow_dispatch:
   
-
 jobs:
   host-webpage:
     runs-on: ubuntu-latest

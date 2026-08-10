@@ -1,4 +1,4 @@
-name: Hosting webpage
+﻿name: Hosting webpage
 on:
   push:
     branches:

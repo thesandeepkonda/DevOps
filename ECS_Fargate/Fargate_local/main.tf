@@ -1,6 +1,6 @@
--------------------------------
+# -------------------------------
 # VPC
--------------------------------
+# -------------------------------
 resource "aws_vpc" "this" {
   cidr_block           = var.vpc_cidr
   enable_dns_support   = true
@@ -8,17 +8,17 @@ resource "aws_vpc" "this" {
   tags = { Name = "${var.project_name}-${var.environment}-vpc" }
 }
 
--------------------------------
+# -------------------------------
 # Internet Gateway
--------------------------------
+# -------------------------------
 resource "aws_internet_gateway" "this" {
   vpc_id = aws_vpc.this.id
   tags = { Name = "${var.project_name}-${var.environment}-igw" }
 }
 
--------------------------------
+# -------------------------------
 # Public Subnets
--------------------------------
+# -------------------------------
 resource "aws_subnet" "public" {
   count                   = length(var.public_subnet_cidrs)
   vpc_id                  = aws_vpc.this.id
@@ -31,9 +31,9 @@ resource "aws_subnet" "public" {
   }
 }
 
--------------------------------
+# -------------------------------
 # Private Subnets
--------------------------------
+# -------------------------------
 resource "aws_subnet" "private" {
   count             = length(var.private_subnet_cidrs)
   vpc_id            = aws_vpc.this.id
@@ -45,9 +45,9 @@ resource "aws_subnet" "private" {
   }
 }
 
--------------------------------
+# -------------------------------
 # Public Route Table & Association
--------------------------------
+# -------------------------------
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.this.id
   tags = { Name = "${var.project_name}-${var.environment}-public-route-table" }
@@ -57,7 +57,6 @@ resource "aws_route" "public_internet" {
   route_table_id         = aws_route_table.public.id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.this.id
-  tags = { Name = "${var.project_name}-${var.environment}-public-internet-route" }
 }
 
 resource "aws_route_table_association" "public" {
@@ -66,9 +65,9 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
--------------------------------
+# -------------------------------
 # NAT Gateway
--------------------------------
+# -------------------------------
 resource "aws_eip" "nat" {
   count  = var.enable_nat_gateway ? 1 : 0
   domain = "vpc"
@@ -83,9 +82,9 @@ resource "aws_nat_gateway" "this" {
   tags = { Name = "${var.project_name}-${var.environment}-nat-gateway" }
 }
 
--------------------------------
+# -------------------------------
 # Private Route Table & Association
--------------------------------
+# -------------------------------
 resource "aws_route_table" "private" {
   count  = var.enable_nat_gateway ? 1 : 0
   vpc_id = aws_vpc.this.id
@@ -97,7 +96,6 @@ resource "aws_route" "private_nat" {
   route_table_id         = aws_route_table.private[0].id
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = aws_nat_gateway.this[0].id
-  tags = { Name = "${var.project_name}-${var.environment}-private-nat-route" }
 }
 
 resource "aws_route_table_association" "private" {
@@ -106,32 +104,25 @@ resource "aws_route_table_association" "private" {
   route_table_id = aws_route_table.private[0].id
 }
 
--------------------------------
+# -------------------------------
 # ALB Module Call
--------------------------------
+# -------------------------------
 module "alb" {
   source = "github.com/thesandeepkonda/DevOps//modules/alb"
   
-  name           = "${var.project_name}-${var.environment}-alb"
-  vpc_id         = aws_vpc.this.id
-  subnet_ids     = aws_subnet.public[*].id
-  target_type    = "ip" 
-  https_required = true
-  domain_name    = "backend.vanlavino.in" 
-  
-  routes = {
-    backend = {
-      priority      = 10
-      path_patterns = ["/*"]
-      target_port   = var.container_port
-      protocol      = "HTTP"
-    }
-  }
+  # Corrected to match modules/alb/variables.tf
+  project_name      = var.project_name
+  environment       = var.environment
+  vpc_id            = aws_vpc.this.id
+  public_subnet_ids = aws_subnet.public[*].id
+  container_port    = var.container_port
+  health_check_path = var.health_check_path
+  certificate_arn   = var.certificate_arn
 }
 
--------------------------------
+# -------------------------------
 # ECS Fargate Module Call
--------------------------------
+# -------------------------------
 module "ecs" {
   source = "github.com/thesandeepkonda/DevOps//modules/ecs"
   
@@ -140,9 +131,7 @@ module "ecs" {
   vpc_id                        = aws_vpc.this.id
   vpc_cidr                      = var.vpc_cidr
   subnet_ids                    = aws_subnet.private[*].id
-  
-  is_fargate                    = true 
-  
+  is_fargate                    = true
   task_role_managed_policy_arns = ["arn:aws:iam::aws:policy/AmazonS3FullAccess"]
   exec_role_managed_policy_arns = ["arn:aws:iam::aws:policy/SecretsManagerReadWrite"]
   
@@ -155,7 +144,8 @@ module "ecs" {
       container_port   = var.container_port
       host_port        = var.container_port
       desired_count    = var.desired_count
-      target_group_arn = module.alb.target_group_arns["backend"]
+      # Corrected to reference the output correctly
+      target_group_arn = module.alb.target_group_arn 
       secrets          = {}
       environment      = var.environment_variables
       create_repo      = true

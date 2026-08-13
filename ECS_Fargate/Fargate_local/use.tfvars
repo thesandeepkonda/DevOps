@@ -38,22 +38,14 @@ health_check_path = "/actuator/health"
 container_name = "vanlavino-backend"
 
 task_cpu = 512
-
 task_memory = 1024
-
 desired_count = 1
-
 min_capacity = 1
-
 max_capacity = 2
-
 
     
 # Docker / ECR
-    
-
 container_image = "592694688975.dkr.ecr.ap-south-1.amazonaws.com/vanlavino:v0.2.2"
-
 
     
 # Application Environment Variables

@@ -60,17 +60,18 @@ output "nat_gateway_id" {
   )
 }
 
-
 # ============================================================
 # Security Groups
 # ============================================================
 
 output "alb_security_group_id" {
   description = "Security group ID for the Application Load Balancer"
-  value       = aws_security_group.alb.id
+  # Corrected to reference the module output
+  value       = module.alb.security_group_id
 }
 
 output "ecs_security_group_id" {
   description = "Security group ID for ECS Fargate tasks"
-  value       = aws_security_group.ecs.id
+  # Corrected to reference the module output
+  value       = module.ecs.task_security_group_id
 }

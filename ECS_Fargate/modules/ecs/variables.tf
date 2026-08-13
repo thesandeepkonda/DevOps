@@ -1,0 +1,65 @@
+variable "resource_name" { type = string }
+variable "aws_region" { type = string }
+variable "vpc_id" { type = string }
+variable "vpc_cidr" { type = string }
+variable "subnet_ids" { type = list(string) }
+
+variable "autoscaling_group_arn" {
+  type        = string
+  description = "ARN of the ASG. Only required if is_fargate is false."
+  default     = ""
+}
+
+variable "is_fargate" {
+  type        = bool
+  description = "Set to true to deploy tasks using AWS Fargate instead of EC2"
+  default     = false
+}
+
+variable "services" {
+  type = map(object({
+    repo_name        = string
+    image_tag        = string
+    cpu              = number
+    memory           = number
+    container_port   = number
+    host_port        = number
+    desired_count    = number
+    target_group_arn = string
+    secrets          = map(string)
+    environment      = map(string)
+    create_repo      = bool
+    autoscaling = object({
+      min_capacity = number
+      max_capacity = number
+      cpu_target   = number
+      mem_target   = number
+    })
+  }))
+}
+
+variable "buffer_capacity" {
+  type        = number
+  default     = 60
+  description = "let you know how much capacity can be kept reserved"
+}
+variable "log_retention" {
+  type    = number
+  default = 7
+}
+variable "task_role_managed_policy_arns" {
+  type        = set(string)
+  description = "Managed IAM policies to attach to ECS task role"
+}
+variable "exec_role_managed_policy_arns" {
+  type        = set(string)
+  description = "Managed IAM policies to attach to ECS task execution role"
+}
+variable "task_network_mode" {
+  type    = string
+  default = "bridge"
+  validation {
+    condition     = contains(["bridge", "awsvpc", "host"], var.task_network_mode)
+    error_message = "task_network_mode must be one of: bridge, awsvpc, host"
+  }
+}
